@@ -103,6 +103,7 @@
 
 
 /***********************peripheral register definition structures ***********************/
+
 /**
  * Peripheral register definition structure for GPIO
  */
