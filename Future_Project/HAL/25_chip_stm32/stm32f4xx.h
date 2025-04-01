@@ -95,7 +95,7 @@
 #define USART1_BASE				(APB2PERIPH_BASE + 0x1000UL)
 #define USART6_BASE				(APB2PERIPH_BASE + 0x1400UL)
 #define ADC1_BASE				(APB2PERIPH_BASE + 0x2000UL)
-#define SPI1_BASE				(APB2PERIPH_BASE + 0x3000ul)
+#define SPI1_BASE				(APB2PERIPH_BASE + 0x3000UL)
 #define SPI4_BASE				(APB2PERIPH_BASE + 0x3400UL)
 #define SYSCFG_BASE				(APB2PERIPH_BASE + 0x3800UL)
 #define EXTI_BASE				(APB2PERIPH_BASE + 0x3C00UL)
@@ -103,6 +103,7 @@
 
 
 /***********************peripheral register definition structures ***********************/
+
 /**
  * Peripheral register definition structure for GPIO
  */
@@ -183,6 +184,25 @@ typedef struct
 	__IO U32 DUMMY[2];
 	__IO U32 CMPCR;
 }SYSCFG_TypeDef;
+
+/**
+ * Peripheral register definition structure for SPIx
+ */
+typedef struct 
+{
+    __IO U32   CR1;
+    __IO U32   CR2;
+    __IO U32   SR;
+    __IO U32   DR;
+    __IO U32   CRCPR;
+    __IO U32   RXCRCR;
+    __IO U32   TXCRCR;
+    __IO U32   I2SCFGR;
+    __IO U32   I2SPR;
+}SPI_TypeDef;
+
+
+
 /********************** enum for macros used ************************/
 enum
 {
@@ -191,8 +211,8 @@ enum
 	TIM4,
 	TIM5,
 	WWDGEN = 11,
-	SPI2 = 14,
-	SPI3,
+	SPI_2 = 14,
+	SPI_3,
 	USART2 = 17,
 	I2C1 = 21,
 	I2C2,
@@ -207,8 +227,8 @@ enum
 	USART6,
 	ADC1 = 8,
 	SDIO = 11,
-	SPI1,
-	SPI4,
+	SPI_1,
+	SPI_4,
 	SYSCFG,
 	TIM9 = 16,
 	TIM10,
@@ -242,10 +262,13 @@ enum
 #define GPIOH 					((GPIOx_TypeDef*) GPIOH_BASE)
 
 #define RCC						((RCC_TypeDef*) RCC_BASE)
-
 #define EXTI					((EXTI_TypeDef*) EXTI_BASE)
-
 #define SYS_CFG					((SYSCFG_TypeDef*)SYSCFG_BASE)
+
+#define SPI1					((SPI_TypeDef*) SPI1_BASE)
+#define SPI2					((SPI_TypeDef*) SPI2_BASE)
+#define SPI3					((SPI_TypeDef*) SPI3_BASE)
+#define SPI4					((SPI_TypeDef*) SPI4_BASE)
 
 /**
  * IRQ (Interrupt Request)
@@ -257,6 +280,12 @@ enum
 #define IRQ_NO_EXTI4		10
 #define IRQ_NO_EXTI9_5		23
 #define IRQ_NO_EXTI15_10	40
+#define IRQ_NO_EXTI16		1
+#define IRQ_NO_EXTI17		41
+#define IRQ_NO_EXTI18		42
+#define IRQ_NO_EXTI21		2
+#define IRQ_NO_EXTI22		3
+
 
 
 /**
@@ -272,8 +301,8 @@ enum
 /**
  * Clock enable Macros for SPIx peripherals
  */
-#define SPIx_PCLOCK_EN(type, pmap)		do{										\
-											if((type == 1 || type == 4))		\
+#define SPIx_PCLOCK_EN(pmap)		do{										\
+											if((pmap == 12 || pmap == 13))		\
 											{									\
 												RCC->APB2ENR |= (1U<<pmap);		\
 											}									\
@@ -325,7 +354,7 @@ enum
 
 
 /**
- * returs port code for given GPIOx base address
+ * return port code for given GPIOx base address
  */
 
 
@@ -337,7 +366,7 @@ enum
 
 
 #include <stm32f40xx_gpio_driver.h>
-
+#include <stm32f40xx_SPI_driver.h>
 
 
 
