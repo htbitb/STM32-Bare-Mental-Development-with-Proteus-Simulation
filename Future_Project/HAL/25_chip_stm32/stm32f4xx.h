@@ -1,8 +1,7 @@
-#include<macro.h>
-
 #ifndef INC_STM32F40XX_H_
 #define INC_STM32F40XX_H_
 
+#include "Future_Project\SYS\macros.h"
 
 /*********************** START: Processor Specific Details ********************* */
 /**
@@ -190,16 +189,33 @@ typedef struct
  */
 typedef struct 
 {
-    __IO U32   CR1;
-    __IO U32   CR2;
-    __IO U32   SR;
-    __IO U32   DR;
-    __IO U32   CRCPR;
-    __IO U32   RXCRCR;
-    __IO U32   TXCRCR;
-    __IO U32   I2SCFGR;
-    __IO U32   I2SPR;
+    __IO U32   SPI_CR1;
+    __IO U32   SPI_CR2;
+    __IO U32   SPI_SR;
+    __IO U32   SPI_DR;
+    __IO U32   SPI_CRCPR;
+    __IO U32   SPI_RXCRCR;
+    __IO U32   SPI_TXCRCR;
+    __IO U32   SPI_I2SCFGR;
+    __IO U32   SPI_I2SPR;
 }SPI_TypeDef;
+
+/**
+ * Peipheral register definition structure for I2C
+ */
+typedef struct
+{
+	__IO U32	I2C_CR1;
+	__IO U32	I2C_CR2;
+	__IO U32	I2C_OAR1;
+	__IO U32	I2C_OAR2;
+	__IO U32	I2C_DR;
+	__IO U32	I2C_SR1;
+	__IO U32	I2C_SR2;
+	__IO U32	I2C_CCR;
+	__IO U32	I2C_TRISE;
+	__IO U32	I2C_FLTR;
+}I2C_TypeDef;
 
 
 
@@ -365,8 +381,9 @@ enum
 
 
 
-#include <stm32f40xx_gpio_driver.h>
-#include <stm32f40xx_SPI_driver.h>
+#include "Future_Project\DEV\IO\stm32f40xx_gpio_driver.h"
+#include "Future_Project\DEV\I2C\stm32f40xx_i2c_driver.h"
+#include "Future_Project\DEV\SPI\stm32f40xx_SPI_driver.h"
 
 
 

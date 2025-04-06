@@ -1,9 +1,9 @@
 
 
-#include <stm32f40xx.h>
-
 #ifndef _STM32F40XX_SPI_H_
 #define _STM32F40XX_SPI_H_
+
+#include "Future_Project\HAL\25_chip_stm32\stm32f4xx.h"
 
 /**
  * Configuration structure for SPix peripheral 
