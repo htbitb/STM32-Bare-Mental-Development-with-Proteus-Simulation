@@ -87,3 +87,48 @@ The data on SDA line must be stable during the HIGH period of the clock. The HIG
 ### I2C Transfer sequence
 
 ![alt text](picture\image-4.png)
+
+![alt text](picture\image-5.png)
+
+### I2C error and importance of BUSY flag
+**Bus Error**: This error happens when the interface detects an SDA rising or falling edge while SCL is high, occurring in a non-valid position during a byte transfer
+
+**Arbitration Loss Error**: this error can happend when the interface loses the arbitration of the bus to another master
+
+**ACK failure**: this error happens when no ACK is returned for the byte sent
+
+**Overrun Error**: Happens during reception, when a new byte is received and tha data register has not been read yet and the New received byte is lost.
+
+**Under-run Error**: Happens when in transmission when a new byte should be sent and the data register has not been written yet and the same byte is sent twice.
+- In the I2C the overrun and underrun will not happen if clock stretching is enabled be cause in those conditions the clock will be helped LOW and both communicating devices will enter the wait state.
+
+**PEC error**: Happens when there is CRC mismatch, if you have enabled the CRC feature.
+
+**Time-ot Error**: Happens when master ir slave stretches the clock, by holding it low more than recommend amount of time.
+
+#### BTF flag in TX and preventing underrun
+During Txing of a data byte, if TXE=1, then that means data register is empty
+
+And if the firmware has not written any byte to data register before shift register becomes empty(previous byte transmission), then BTF flag will be set and clock will be stretched to prevent the under run
+
+#### BTF flag in RX and preventing overrun
+if RXNE = 1, then it means new data is waiting in the data register, and if the firmware has not read the data byte yet before shift register is filled with another new data, then also the BTF flag will be set and clock will be stretched to prevent the overrun.
+
+
+### Common Problems in I2C and debugging Tips
+**Mandatory Tip**: Whenever you face problems in I2C, probe the SDA and SLA line after I2C initialization. it must be held at HIGH Voltage.
+
+#### Problem 1: SDA and SCL line not held HIGH Voltage after I2C pin initialization
+**reason 1**: Not activating the pullup registors if you are using the internal pull up resistor of an I/o line
+
+**Debug Tip**: worth checking the configuration register of an I/O line to see whether the pull ups are really activated or not, best way is to dump the register contents
+
+#### Problem 2: ACK failure
+**Reason**: Not enabling the ACKing feature in the I2C control register
+
+**Debug tip**: Cross check the I2C control register ACK enable field
+
+#### Problem 3: Master is not producing the clock 
+**Debug Tip 1**: First check whether I2C peripheral clock is enabled and set to at least 2mhz to procedure standard mode i2c clock frequency
+
+**Debug Tp 2**: Check whether GPIOs which you used for SCL and SDA functionality are configured properly for the alternate functionality.

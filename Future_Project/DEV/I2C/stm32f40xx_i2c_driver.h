@@ -28,6 +28,14 @@ typedef struct
 {
     I2C_TypeDef*    pI2Cx;
     I2C_Conf_tp     I2CConf;
+    U08             *pTxBuffer;
+    U08             *pRxBuffer;
+    U32             Txlen;
+    U32             Rxlen;
+    U08             TxRxState;
+    U08             DevAddr;
+    U32             RxSize;
+    U08             Rs; /*<Repeat Start value>*/
 }I2C_Handle_tp;
 
 
@@ -128,9 +136,33 @@ enum
 #define I2C_FM_DUTY_16_9        1
 
 /**
+ * I2C application status
+ */
+#define I2C_READY               0
+#define I2C_BUSY_IN_RX          1 
+#define I2C_BUSY_IN_TX          2
+/**
  * 
  */
 #define I2C_FLAG(field)            (1 << field)
+
+#define I2C_DISABLE_RS          RESET
+#define I2C_ENABLE_RS           SET
+
+/**
+ * I2C Application events macros
+ */
+#define I2C_EV_TX_CMPLT         0
+#define I2C_EV_RX_CMPLT         1
+#define I2C_EV_STOP             2
+#define I2C_ERROR_BERR          3
+#define I2C_ERROR_ARLO          4
+#define I2C_ERROR_AF            5
+#define I2C_ERROR_OVR           6
+#define I2C_ERROR_TIMEOUT       7
+#define I2C_EV_DATA_REQ         8
+#define I2C_EV_DATA_RCV         9
+
 
 /*******************************************************************************
  *                         APIs supported by this driver
@@ -151,19 +183,31 @@ void I2Cx_DeInit(U08 I2Cx);
  * Data Send and Receive
  */
 void I2C_MasterSendData(I2C_Handle_tp *pI2CHandle, U08* pTxbuffer, U32 len, U08 SlaveAddr);
-void I2C_DataReceive(I2C_TypeDef* pI2Cx, U08 *pRxBuffer, U32 len);
+void I2C_MasterReceiveData(I2C_Handle_tp* pI2CHandle, U08 *pRxBuffer, U08 len, U08 SlaveAddr);
 
-U08 I2C_DataTransferIT(I2C_Handle_tp* pI2CHandle, U08 *pTxBuffer, U32 len);
-U08 I2C_DataReceiveIT(I2C_Handle_tp* pI2CHandle, U08 *pRxBuffer, U32 len);
+U08 I2C_MasterSendDataIT(I2C_Handle_tp *pI2CHandle, U08* pTxbuffer, U32 len, U08 SlaveAddr, U08 Rs);
+U08 I2C_MasterReceiveDataIT(I2C_Handle_tp* pI2CHandle, U08 *pRxBuffer, U08 len, U08 SlaveAddr, U08 Rs);
+
+void I2C_SlaveSendData(I2C_TypeDef *pI2Cx,U08 data);
+U08 I2C_SlaveReceiveData(I2C_TypeDef *pI2Cx);
+/**
+ * Other API
+ */
+void I2C_ACKManage(I2C_TypeDef* pI2Cx, U08 EnorDis);
+void I2C_MasterHanldeRXENInterrupt(I2C_Handle_tp* pI2CHandle);
+void I2C_MasterHanldeTXEInterrupt(I2C_Handle_tp* pI2CHandle);
+void I2C_CloseSendData(I2C_Handle_tp *pI2CHandler);
+void I2C_CloseReceiveData(I2C_Handle_tp *pI2CHandler);
 
 /**
  * IRQ Configuration and ISR handling
  */
-void I2C_IRQIRConfig(U08 IRQNumber, U08 EnorDis);
-void I2C_IRQPriorityConfig(U08 IRQNumber, U08 IRQPriority);
-void I2C_IRQHandling(I2C_Handle_tp* pI2CHandle);
+void I2C_EV_IRQHandling(I2C_Handle_tp* pI2CHandle);
+void I2C_ER_IRQHandling(I2C_Handle_tp* pI2CHandle);
 
-void I2C_PeripheralControl(I2C_TypeDef* pI2Cx, U08 EnorDis);
+void I2C_IRQPriorityConfig(U08 IRQNumber,U32 IRQPriority);
+void I2C_IRQInterruptConfig(U08 IRQNumber, U32 EnorDis);
+
 U08 I2C_GetFlagStatus(I2C_TypeDef* pI2Cx, U32 FlagName);
 
 U32 RCC_GetPLLOutputClock(void);
