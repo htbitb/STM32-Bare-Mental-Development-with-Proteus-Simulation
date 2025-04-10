@@ -10,61 +10,6 @@ PRIVATE void I2C_ClearADDRFlage(I2C_Handle_tp* pI2CHandler);
 
 
 /******************************************************************* */
-U32 const AHB_PreScale[8]   = {2, 4, 6, 16, 64, 128, 256, 512};
-U32 const APB1_PreScale[4]  = {2, 4, 8, 16};
-
-U32 RCC_GetPLLOutputClock(void)
-{
- // implement later
- return 0;
-}
-
-U32 RCC_GetPCLK1Value(void)
-{
-    U32 PCLK1, SysClk, AHBP_PreSc, APB1_PreSc;
-    U08 clksrc, temp;
-
-    clksrc = (RCC->CFGR >> 2) & 3U;
-
-    if(clksrc == 0)
-    {
-        SysClk = 16000000;
-    }
-    else if (clksrc == 1)
-    {
-        SysClk = 8000000;
-    }
-    else
-    {
-        SysClk = RCC_GetPLLOutputClock();
-    }
-
-    // AHP prescale
-    temp = ((RCC->CFGR >> 4) & 0xF);
-    if(temp < 8 )
-    {
-        AHBP_PreSc = 1;
-    } 
-    else
-    {
-        AHBP_PreSc = AHB_PreScale[temp - 8];
-    }
-
-    // APB1 prescale
-    temp = ((RCC->CFGR >> 10) & 0x7);
-    if(temp < 4 )
-    {
-        APB1_PreSc = 1;
-    } 
-    else
-    {
-        APB1_PreSc = APB1_PreScale[temp - 8];
-    }
-
-    PCLK1 = (SysClk / AHBP_PreSc) / APB1_PreSc;
-
-    return PCLK1;
-}
  
 /**
  * Peripheral clock setup

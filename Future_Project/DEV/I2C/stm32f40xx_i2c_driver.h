@@ -210,8 +210,6 @@ void I2C_IRQInterruptConfig(U08 IRQNumber, U32 EnorDis);
 
 U08 I2C_GetFlagStatus(I2C_TypeDef* pI2Cx, U32 FlagName);
 
-U32 RCC_GetPLLOutputClock(void);
-U32 RCC_GetPCLK1Value(void);
 /**
  * Application callback
  */
