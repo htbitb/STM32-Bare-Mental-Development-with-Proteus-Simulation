@@ -1,4 +1,4 @@
-#include <HAL.h>
+#include <stm32f40xx_gpio_driver.h>
 
 
 
@@ -198,7 +198,7 @@ void GPIO_IRQPriorityConfig(U08 IRQNumber, U08 IRQPriority)
     U08 iprx_section = IRQNumber % 4;
 
     U08 shift_amount = (8 * iprx_section) +  (8 - NO_PR_BITS_IMPLEMENTED);
-    *(NVIC_PR_BASE_ADDR + (iprx * 4)) |= (IRQPriority << shift_amount);
+    *(NVIC_PR_BASE_ADDR + iprx) |= (IRQPriority << shift_amount);
 }
 
 void GPIO_IRQHandling(U08 PinNumber)

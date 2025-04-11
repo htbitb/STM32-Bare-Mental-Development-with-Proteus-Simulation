@@ -1,7 +1,7 @@
 #ifndef INC_STM32F40XX_GPIO_H_
 #define INC_STM32F40XX_GPIO_H_
 
-#include <stm32f40xx.h>
+#include "Future_Project\HAL\25_chip_stm32\stm32f4xx.h"
 #include <macro.h>
 
 typedef uint8_t U08;
