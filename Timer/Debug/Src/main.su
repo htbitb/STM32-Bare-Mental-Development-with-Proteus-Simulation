@@ -1,0 +1,7 @@
+E:/stm32workspace/chip_header/Drivers/CMSIS/Include/core_cm4.h:1684:22:__NVIC_EnableIRQ	16	static,ignoring_inline_asm
+../Src/main.c:16:5:main	8	static
+../Src/main.c:50:6:tim2_1hz_init	4	static
+../Src/main.c:68:6:tim2_1hz_interrupt	8	static
+../Src/main.c:92:6:tim2_output_compare	4	static
+../Src/main.c:117:6:tim3_input_capture	4	static
+../Src/main.c:150:6:TIM2_IRQHandler	4	static

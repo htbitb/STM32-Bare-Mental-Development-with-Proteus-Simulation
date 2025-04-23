@@ -5,8 +5,11 @@
 #define CTRL_ENABLE				(1U<<0)
 #define CTRL_CLKSRC				(1U<<2)
 #define CTRL_COUNTFLAG			(1U<<16)
+#define ONE_SEC_LOAD			16000000
+#define CTRL_TICKINT			(1U<<1)
 
 void systickDemayMS(int delay);
+void systick_1hz_interrupt(void);
 
 int main()
 {
@@ -22,13 +25,15 @@ int main()
 	GPIOA->MODER |= (1U<<10);
 	GPIOA->MODER &= ~(1U<<11);
 
-	while(1){
-		/**
-		 * 3. Set Pin5 as a out put high
-		 */
-		GPIOA->ODR ^= (1U<<5);
+	systick_1hz_interrupt();
 
-		systickDemayMS(10000);
+	while(1){
+//		/**
+//		 * 3. Set Pin5 as a out put high
+//		 */
+//		GPIOA->ODR ^= (1U<<5);
+//
+//		systickDemayMS(10000);
 
 	}
 }
@@ -53,4 +58,27 @@ void systickDemayMS(int delay)
 
 	}
 	SysTick->CTRL = 0;
+}
+
+void systick_1hz_interrupt(void)
+{
+	/*Reload with number of clocks persecond*/
+	SysTick->LOAD = ONE_SEC_LOAD;
+
+	/*clear systick current value*/
+	SysTick->VAL = 0;
+
+	/*Enable systick and select internal clk src*/
+	SysTick->CTRL = CTRL_ENABLE | CTRL_CLKSRC;
+
+	/*Enable Systick interrupt*/
+	SysTick->CTRL |= CTRL_TICKINT;
+
+	/*Clear */
+
+}
+
+void SysTick_Handler(void)
+{
+	GPIOA->ODR ^= (1U<<5);
 }

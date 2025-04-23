@@ -2,11 +2,13 @@
 
 #define ADC1EN	(1U<<8)
 #define ADC_CH1 (1U<<0)
-
+#define CR1_EOCIE	(1U<<5)
 
 void start_conversion(void);
 void PA1_ADC_init(void);
 uint32_t adc_read(void);
+void PA1_ADC_interrupt_init(void);
+void adc_callback(void);
 
 uint32_t sensor_value;
 uint32_t temperature;
@@ -25,7 +27,7 @@ int main()
 	GPIOA->MODER |= (1U<<10);
 	GPIOA->MODER &= ~(1U<<11);
 
-	PA1_ADC_init();
+	PA1_ADC_interrupt_init();
 
 
 	while(1)
@@ -45,6 +47,57 @@ int main()
 	}
 
 	return 0;
+}
+void adc_callback(void)
+{
+
+}
+
+void ADC_IRRHandler(void)
+{
+	/*Check for eoc in SR*/
+	if((ADC1->SR & CR1_EOCIE) != 0)
+	{
+		/*Clear EOC*/
+		ADC1->SR &= ~CR1_EOCIE;
+
+		/*Do something*/
+		adc_callback();
+	}
+}
+
+void PA1_ADC_interrupt_init(void)
+{
+	/*Enable clock access to GPIOA*/
+	RCC->AHB1ENR |= (1U<<0);
+
+	/*Set the mode of PA1 to analog*/
+	GPIOA->MODER |= (1U<<2);
+	GPIOA->MODER |= (1U<<3);
+
+
+	/************** Configure the ADC module *******************/
+
+	/*Enable clock access to adc pin's port*/
+	RCC->APB2ENR |= ADC1EN;
+
+	/*Enable ADC end-of-conversion interrupt*/
+	ADC1->CR1 |= CR1_EOCIE;
+
+	/*Enable ADC interrupt in NVIC*/
+	NVIC_EnableIRQ(ADC_IRQn)
+
+	/****************** Configure adc parameter****************/
+	/*Conversion sequence start*/
+	ADC1->SQR3 |= ADC_CH1;
+
+	/*Conversion sequence length*/
+	ADC1->SQR1 = 0x0U;
+
+	/*Enable ADC module*/
+	ADC1->CR2 |= (1U<<0);
+
+
 }
 
 void PA1_ADC_init(void)

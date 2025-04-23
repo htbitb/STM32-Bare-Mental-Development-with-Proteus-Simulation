@@ -1,0 +1,7 @@
+E:/stm32workspace/chip_header/Drivers/CMSIS/Include/core_cm4.h:1684:22:__NVIC_EnableIRQ	2
+../Src/main.c:16:5:main	1
+../Src/main.c:50:6:tim2_1hz_init	1
+../Src/main.c:68:6:tim2_1hz_interrupt	1
+../Src/main.c:92:6:tim2_output_compare	1
+../Src/main.c:117:6:tim3_input_capture	1
+../Src/main.c:150:6:TIM2_IRQHandler	1
